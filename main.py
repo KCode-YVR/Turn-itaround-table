@@ -16,57 +16,59 @@ class MusicPlayer(QWidget):
     def __init__(self):
         super().__init__()
 
+        self.setWindowTitle("Turn(itaround)table")
 
-        self.setWindowTitle("Python Music Player")
-
-        self.is_paused = False
+        self.isPaused = False
 
         pygame.mixer.init()
+        pygame.mixer.music.load("Under the sun.mp3")
 
-        pygame.mixer.music.load("song.mp3")
+        self.statusLabel = QLabel("Ready to play")
+        self.playPauseButton = QPushButton("Play")
+        self.volumeSlider = QSlider(Qt.Orientation.Horizontal)
 
-        self.status_label = QLabel("Ready to play")
-        self.play_pause_button = QPushButton("Play")
-        self.volume_slider = QSlider(Qt.Orientation.Horizontal)
+        self.volumeSlider.setRange(0, 100)
+        self.volumeSlider.setValue(50)
 
-        self.volume_slider.setRange(0, 100)
-        self.volume_slider.setValue(50)
-
-        
         pygame.mixer.music.set_volume(0.5)
 
-        self.play_pause_button.clicked.connect(self.toggle_music)
-        self.volume_slider.valueChanged.connect(self.change_volume)
+        self.playPauseButton.clicked.connect(self.toggleMusic)
+        self.volumeSlider.valueChanged.connect(self.changeVolume)
 
         layout = QVBoxLayout()
-        layout.addWidget(self.status_label)
-        layout.addWidget(self.play_pause_button)
-        layout.addWidget(self.volume_slider)
+        layout.addWidget(self.playPauseButton)
+        layout.addWidget(self.volumeSlider)
+        layout.addWidget(self.statusLabel)
         self.setLayout(layout)
-
-    def toggle_music(self):
-        if not pygame.mixer.music.get_busy() and not self.is_paused:
+    
+    def toggleMusic(self):
+        if not pygame.mixer.music.get_busy() and not self.isPaused:
             pygame.mixer.music.play()
-            self.play_pause_button.setText("Pause")
-            self.status_label.setText("Playing")
-        elif self.is_paused:
+            self.playPauseButton.setText("Pause")
+            self.statusLabel.setText("Playing music")
+        elif self.isPaused:
             pygame.mixer.music.unpause()
-            self.is_paused = False
-            self.play_pause_button.setText("Pause")
-            self.status_label.setText("Playing")
+            self.isPaused = False
+            self.playPauseButton.setText("Pause")
+            self.statusLabel.setText("Playing music")
         else:
             pygame.mixer.music.pause()
-            self.is_paused = True
-            self.play_pause_button.setText("Resume")
-            self.status_label.setText("Paused")
+            self.isPaused = True
+            self.playPauseButton.setText("Resume")
+            self.statusLabel.setText("Paused")
 
-    def change_volume(self, value):
-        volume = value / 100
-        pygame.mixer.music.set_volume(volume)
-        self.status_label.setText(f"Volume: {value}%")
-
+    def changeVolume(self, value):
+        vol = value/100
+        pygame.mixer.music.set_volume(vol)
+        self.statusLabel.setText(f"Volume: {value}%")
 
 app = QApplication(sys.argv)
 window = MusicPlayer()
 window.show()
 sys.exit(app.exec())
+
+
+            
+
+        
+
